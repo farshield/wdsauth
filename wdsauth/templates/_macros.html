@@ -1,0 +1,55 @@
+{% macro static_table(static_list, table_id, table_class, info_enabled=False) %}
+<table id="{{ table_id }}" class="{{ table_class }}">
+  <thead>
+    <tr>
+      <th class="text-center">Code</th>
+      <th class="text-center">Destination</th>
+      <th class="text-center">Lifetime [hours]</th>
+      <th class="text-center">Total mass [kT]</th>
+      <th class="text-center">Max mass/jump [kT]</th>
+      {% if info_enabled %}
+      <th>Other info</th>
+      {% endif %}
+    </tr>
+  </thead>
+  <tbody>
+    {% for static in static_list %}
+    <tr>
+      <td class="text-center">{{ static.code }}</td>
+      <td class="text-center">
+        {% if static.destination == "High-Sec" %}
+        <span class="label label-success">{{ static.destination }}</span>
+        {% elif static.destination == "Low-Sec" %}
+        <span class="label label-warning">{{ static.destination }}</span>
+        {% elif static.destination == "Null-Sec" %}
+        <span class="label label-danger">{{ static.destination }}</span>
+        {% elif static.destination == "C12" %}
+        <span class="label label-info">{{ static.destination }}</span>
+        {% elif static.destination == "Exit WH" %}
+        <span class="label label-default">{{ static.destination }}</span>
+        {% else %}
+        <span class="label label-primary">{{ static.destination }}</span>
+        {% endif %}
+      </td>
+      <td class="text-center">{{ static.stable_time }}</td>
+      <td class="text-center">{{ static.total_mass }}</td>
+      <td class="text-center">{{ static.max_jump }}</td>
+      {% if info_enabled %}
+      <td>{{ static.info }}</td>
+      {% endif %}
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endmacro %}
+
+{% macro planet_panel(planet_type, planet_count) %}
+<li>
+  <div class="panel panel-default">
+    <div class="panel-body">
+      <img src="/static/img/planets/{{ planet_type.lower() }}.png" alt="{{ planet_type }}">
+    </div>
+    <div class="panel-footer">{{ planet_type }} <span class="badge">{{ planet_count }}</span></div>
+  </div>
+</li>
+{% endmacro %}

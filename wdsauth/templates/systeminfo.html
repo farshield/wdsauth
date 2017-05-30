@@ -1,0 +1,140 @@
+{% extends "_base.html" %}
+{% import "_macros.html" as macros %}
+
+{% block content %}
+<h1 class="page-header">System Information</h1>
+
+<div class="panel panel-info">
+  <div class="panel-heading">
+    <h3 class="panel-title">Search the wormhole database</h3>
+  </div>
+  <div class="panel-body">
+    <form action="{{ url_for('epicenter.systeminfo') }}" class="form-inline" method="get">
+      <input type="text" class="form-control" name="jcode" placeholder="Wormhole name" size="32">
+      <button type="submit" class="btn btn-primary">
+        <span class="glyphicon glyphicon-search" aria-hidden="true"></span> Search
+      </button>
+    </form>
+  </div>
+</div>
+
+{% if jcode %}
+  {% if wh %}
+    <h3 class="page-header">{{ wh.system_name }}</h3>
+
+    <!-- General Information -->
+    <div class="panel panel-info">
+      <div class="panel-heading">
+        <h3 class="panel-title"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> General Information</h3>
+      </div>
+      <div class="panel-body">
+        <table class="table table-hover">
+          <tr>
+            <td class="col-md-3"><strong>Class:</strong></td>
+            <td>{{ wh.system_class }}</td>
+          </tr>
+          <tr>
+            <td><strong>Effect:</strong></td>
+            <td>{{ wh.effect }}</td>
+          </tr>
+          <tr>
+            <td><strong>Radius:</strong></td>
+            <td>{{ wh.radius }} AU</td>
+          </tr>
+          <tr>
+            <td><strong>Number of moons:</strong></td>
+            <td>{{ wh.moons }}</td>
+          </tr>
+          <tr>
+            <td><strong>Region:</strong></td>
+            <td>{{ wh.region }}</td>
+          </tr>
+          <tr>
+            <td><strong>Constellation:</strong></td>
+            <td>{{ wh.constellation }}</td>
+          </tr>
+          {% if wh.info %}
+          <tr>
+            <td><strong>Other information:</strong></td>
+            <td>{{ wh.info }}</td>
+          </tr>
+          {% endif %}
+        </table>
+        <a href="https://tripwire.torpedodelivery.com/?system={{ wh.system_name }}" target="_blank" class="btn btn-md btn-default">
+          <img src="/static/img/tripwire-logo.png"> Tripwire
+        </a>
+        <a href="https://zkillboard.com/system/{{ wh.system_id }}/" target="_blank" class="btn btn-md btn-default">
+          <img src="/static/img/zkill-logo.png"> Zkillboard
+        </a>
+      </div>
+    </div>
+
+    <!-- Statics -->
+    <div class="panel panel-info">
+      <div class="panel-heading">
+        <h3 class="panel-title"><span class="glyphicon glyphicon-link" aria-hidden="true"></span> Statics</h3>
+      </div>
+      <div class="panel-body">
+        {{ macros.static_table(wh.statics, "statics", "table table-hover") }}
+      </div>
+    </div>
+
+    <!-- Planets -->
+    <div class="panel panel-info">
+      <div class="panel-heading">
+        <h3 class="panel-title"><span class="glyphicon glyphicon-globe" aria-hidden="true"></span> Planets</h3>
+      </div>
+      <div class="panel-body">
+        <ul class="list-inline text-center">
+          {% if wh.temperate > 0 %}
+            {{ macros.planet_panel("Temperate", wh.temperate) }}
+          {% endif %}
+
+          {% if wh.ice > 0 %}
+            {{ macros.planet_panel("Ice", wh.ice) }}
+          {% endif %}
+
+          {% if wh.gas > 0 %}
+            {{ macros.planet_panel("Gas", wh.gas) }}
+          {% endif %}
+
+          {% if wh.oceanic > 0 %}
+            {{ macros.planet_panel("Oceanic", wh.oceanic) }}
+          {% endif %}
+
+          {% if wh.lava > 0 %}
+            {{ macros.planet_panel("Lava", wh.lava) }}
+          {% endif %}
+
+          {% if wh.barren > 0 %}
+            {{ macros.planet_panel("Barren", wh.barren) }}
+          {% endif %}
+
+          {% if wh.storm > 0 %}
+            {{ macros.planet_panel("Storm", wh.storm) }}
+          {% endif %}
+
+          {% if wh.plasma > 0 %}
+            {{ macros.planet_panel("Plasma", wh.plasma) }}
+          {% endif %}
+
+          {% if wh.shattered > 0 %}
+            {{ macros.planet_panel("Shattered", wh.shattered) }}
+          {% endif %}
+        </ul>
+        <ul class="list-group">
+          <li class="list-group-item"><strong>Total number of planets:</strong> {{ wh.planet_count() }}</li>
+        </ul>
+      </div>
+    </div>
+
+  {% else %}
+    <div class="alert alert-danger" role="alert">
+      <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+      <span class="sr-only">Error:</span>
+      Unable to find '{{ jcode }}' in the wormhole database
+    </div>
+  {% endif %}
+{% endif %}
+
+{% endblock %}
